@@ -100,6 +100,14 @@ function startRadio(userInitiated){
  pendingPlay=false;
  var currentGeneration=generation;
  try{
+   // On the very first real user click, ask Mixcloud both to load the
+   // selected set with startPlaying=true and to play it immediately.
+   // Some embedded players ignore play() before their first track load.
+   if(userInitiated&&!sessionStarted){
+     w.load(key(tracks[idx].url),true).catch(function(){
+       if(currentGeneration===generation&&!playing)status("Please press ▶ inside the official Mixcloud player to enable the first listen.");
+     });
+   }
    w.play().catch(function(){
      if(currentGeneration!==generation||playing)return;
      if(userInitiated)reloadWidget(true);
@@ -259,7 +267,12 @@ el("next").addEventListener("click",next);
 el("play").addEventListener("click",function(){startRadio(true);});
 // LISTEN NOW is a true play action, not merely a jump to the radio section.
 var heroListen=document.querySelector(".hero-actions .btn-primary");
-if(heroListen){heroListen.addEventListener("click",function(){startRadio(true);});}
+if(heroListen){heroListen.addEventListener("click",function(event){
+  event.preventDefault();
+  // Mixcloud's official API requires its iframe to be visible to be controlled.
+  el("radio").scrollIntoView({behavior:"auto",block:"start"});
+  startRadio(true);
+});}
 el("shuffle").addEventListener("click",function(){shuffle=!shuffle;this.classList.toggle("active",shuffle);this.setAttribute("aria-pressed",String(shuffle));});
 el("repeat").addEventListener("click",function(){loop=!loop;this.classList.toggle("active",loop);this.setAttribute("aria-pressed",String(loop));});
 function connectWidget(){
