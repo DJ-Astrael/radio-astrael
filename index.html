@@ -15,15 +15,26 @@
 @media(max-width:670px){.wrap{width:91%}nav{display:none}.profile{font-size:11px}.brand strong{font-size:14px}.hero{display:block;padding:58px 0 52px}.hero h1{font-size:clamp(48px,12vw,77px)}.orbit-art{display:none}.section-heading{align-items:start}.console{grid-template-columns:1fr}.cover{height:235px}.console-content{padding:23px 19px}.player-bottom{display:block}.mix-link{display:block;margin-top:9px}.item{grid-template-columns:18px 64px minmax(80px,1fr) auto;padding:11px 10px;gap:9px}.thumb{width:64px;height:62px}.mix-name{font-size:14px}.mix-meta{font-size:10px}.length{display:none}.actions{flex-direction:column;align-items:center;gap:0}.tiny-button{padding:7px 9px}.about{grid-template-columns:1fr;gap:5px;margin-top:62px}.hero p{font-size:14px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 
-/* The original turquoise proxy could not initiate the first sound in Mixcloud. The visible, unmodified Mixcloud widget is now the primary turquoise control. */
-.controls{flex-wrap:wrap;align-items:center}
-.native-player-control{flex:1 1 340px;min-width:250px;border:2px solid var(--cyan);border-radius:12px;padding:8px;background:linear-gradient(110deg,#0b313a,#102439);box-shadow:0 0 0 3px #73f9eb10}
-.native-player-control .native-heading{display:block;color:var(--cyan);font-size:10px;letter-spacing:.11em;font-weight:800;padding:0 3px 6px}
-.native-player-control .mcframe{width:100%;height:155px;display:block}
-.native-player-control:focus-within{outline:2px solid var(--cyan);outline-offset:3px}
-.native-player-control.attention{box-shadow:0 0 0 4px #83f8ed38,0 0 35px #75f3e93d}
-#play[hidden]{display:none!important}
-@media(max-width:670px){.native-player-control{flex-basis:100%;min-width:0;order:4}.native-player-control .mcframe{height:155px}}
+/* Radio Astraël — restrained visual refinements, original layout retained */
+.console{background:linear-gradient(125deg,#1b2541,#11182c 54%,#18172c);border-color:#53627d66;box-shadow:0 18px 68px #030713aa,0 0 0 1px #a4fff008}
+.console-content{position:relative}
+.console-content::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,#7cf9eb70,#b7a5ff42,transparent);pointer-events:none}
+.play{display:grid;place-items:center;box-shadow:0 0 0 6px #81f4e908,0 7px 22px #64f5e02a;transition:transform .18s ease,box-shadow .18s ease}
+.play:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 0 0 7px #81f4e918,0 12px 28px #64f5e04a}
+.play:active{transform:scale(.97)}
+.round,.mode{transition:background .16s ease,border-color .16s ease,transform .16s ease}
+.round:hover,.mode:hover{background:#7cf9eb0b;transform:translateY(-1px)}
+.controls{gap:14px}
+.mcframe{height:126px;border:1px solid #61738a50;border-radius:11px;box-shadow:0 7px 26px #05091850}
+.iframe-label{margin-top:22px;display:flex;gap:12px;align-items:center}
+.iframe-label::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,#50627999,transparent)}
+.mcframe.needs-interaction{outline:2px solid #7cf9eb80;outline-offset:3px}
+.player-bottom{margin-top:14px}
+.mix-link{font-weight:800;letter-spacing:.03em}
+.item{transition:transform .18s ease,border-color .18s ease,background .18s ease}
+.item.selected{box-shadow:inset 3px 0 #7cf9eb}
+@media(max-width:670px){.console-content{padding:24px 18px}.controls{gap:11px}.mcframe{height:134px}}
+@media(prefers-reduced-motion:reduce){.play,.round,.mode,.item{transition:none!important}}
 </style>
 </head>
 <body>
@@ -32,7 +43,7 @@
 <section class="hero"><div><div class="tag"><span class="live"></span>24/7 PLAYLIST • INFINITE EMOTIONS</div><h1>ONE<br>FREQUENCY.<br><em>INFINITE<br>EMOTIONS.</em></h1><p>Progressive. Melodic Techno. Trance. Between shadow and light, discover Astraël's handpicked selection. Press play whenever and wherever you want.</p><div class="hero-actions"><a class="btn btn-primary" href="#radio">▶ &nbsp; LISTEN NOW</a><a class="btn btn-secondary" href="#selection">EXPLORE THE MIXES ↓</a></div></div><div class="orbit-art" aria-hidden="true"><div class="planet">✦</div><div class="orbit-caption">ASTRAËL / BEYOND SOUND</div></div></section>
 <div class="rule"></div>
 <section id="radio" class="content"><div class="section-heading"><div><span class="eyebrow">01 / THE FREQUENCY</span><h2>The radio<span>.</span></h2></div><span class="side-note">MIXCLOUD PLAYER • 24/7</span></div>
-<div class="console"><div id="largeCover" class="cover"><span class="initial">A✦</span><img id="nowImage" alt="Cover art for the selected mix"></div><div class="console-content"><div class="player-top"><span class="status">● RADIO ASTRAËL</span><span id="counter">01 / 07</span></div><div class="current-label">NOW PLAYING · ASTRAËL</div><h3 id="nowTitle" class="current-title">The Last Transmission</h3><p class="current-subtitle" id="nowDescription">Radio Egypt</p><div class="controls"><button id="prev" class="round" type="button" aria-label="Previous mix">⏮</button><div class="native-player-control" id="native-player-control" aria-label="Official Mixcloud radio playback"><span class="native-heading">▶ START RADIO — OFFICIAL MIXCLOUD PLAYER</span><iframe class="mcframe" id="widget" title="Listen to Astraël on Mixcloud" allow="autoplay" loading="eager" src="https://www.mixcloud.com/widget/iframe/?hide_cover=0&mini=0&light=0&autoplay=0&feed=%2FAstrael%2Fastrael-the-last-transmission-on-dj-power-power-mix-radio-egypt-15%2F"></iframe></div><button id="play" class="play" type="button" aria-label="Pause or resume radio" hidden>▶</button><button id="next" class="round" type="button" aria-label="Next mix">⏭</button><span class="spacer"></span><button id="shuffle" class="mode" type="button" aria-pressed="false" title="Shuffle playback">⇄</button><button id="repeat" class="mode active" type="button" aria-pressed="true" title="Repeat playlist">↻</button></div><div class="progress"><div id="progress"></div></div><div class="time"><span id="position">00:00</span><span id="duration">--:--</span></div><div class="iframe-label">PLAY THE MUSIC DIRECTLY IN THE TURQUOISE MIXCLOUD PLAYER ABOVE</div><div class="player-bottom"><p id="status" role="status" aria-live="polite">Press ▶ inside the turquoise Mixcloud player above to start.</p><a id="openTrack" class="mix-link" href="https://www.mixcloud.com/Astrael/astra%C3%ABl-neural-dream-radio-egypt-trance21com/" target="_blank" rel="noopener noreferrer">COMMENT / FAVORITE ↗</a></div></div></div><p class="note">The Last Transmission is selected first. Start listening with the native Mixcloud Play button in the turquoise panel. After playback begins, the radio controls can pause, resume and change shows. Mixcloud handles listener statistics.</p></section>
+<div class="console"><div id="largeCover" class="cover"><span class="initial">A✦</span><img id="nowImage" alt="Cover art for the selected mix"></div><div class="console-content"><div class="player-top"><span class="status">● RADIO ASTRAËL</span><span id="counter">01 / 07</span></div><div class="current-label">NOW PLAYING · ASTRAËL</div><h3 id="nowTitle" class="current-title">The Last Transmission</h3><p class="current-subtitle" id="nowDescription">Radio Egypt</p><div class="controls"><button id="prev" class="round" type="button" aria-label="Previous mix">⏮</button><button id="play" class="play" type="button" aria-label="Play or pause">▶</button><button id="next" class="round" type="button" aria-label="Next mix">⏭</button><span class="spacer"></span><button id="shuffle" class="mode" type="button" aria-pressed="false" title="Shuffle playback">⇄</button><button id="repeat" class="mode active" type="button" aria-pressed="true" title="Repeat playlist">↻</button></div><div class="progress"><div id="progress"></div></div><div class="time"><span id="position">00:00</span><span id="duration">--:--</span></div><div class="iframe-label">OFFICIAL MIXCLOUD PLAYER</div><iframe class="mcframe" id="widget" title="Listen to Astraël on Mixcloud" allow="autoplay" loading="eager" src="https://www.mixcloud.com/widget/iframe/?hide_cover=0&mini=0&light=0&autoplay=1&feed=%2FAstrael%2Fastrael-the-last-transmission-on-dj-power-power-mix-radio-egypt-15%2F"></iframe><div class="player-bottom"><p id="status" role="status" aria-live="polite">Starting with The Last Transmission… If your browser blocks autoplay, press ▶.</p><a id="openTrack" class="mix-link" href="https://www.mixcloud.com/Astrael/astra%C3%ABl-neural-dream-radio-egypt-trance21com/" target="_blank" rel="noopener noreferrer">COMMENT / FAVORITE ↗</a></div></div></div><p class="note">Autoplay starts with The Last Transmission when your browser allows it. Otherwise, press ▶ once to start your listening session. Mixcloud handles playback statistics and audience interactions.</p></section>
 <section id="selection" class="content"><div class="section-heading"><div><span class="eyebrow">02 / THE COLLECTION</span><h2>Musical journeys<span>.</span></h2></div><span class="side-note" id="catalog-total" aria-live="polite">7 MIXES · SYNCING WITH MIXCLOUD…</span></div><div id="playlist" class="list" aria-label="Selected mixes"></div></section>
 <section id="about" class="about"><div><div class="eyebrow">03 / THE PHILOSOPHY</div><h2>NOT JUST MUSIC.<br><em>A STATE OF MIND.</em></h2></div><div><p>Radio Astraël brings together Astraël's sets in a continuous musical journey: hypnotic atmospheres, progressive energy, and emotions beyond borders.</p><p>All mixes remain hosted on Mixcloud. Select ↗ to open each set, share it, leave a comment, add it to your favorites, or support the artist.</p><a class="profile" href="https://www.mixcloud.com/Astrael/" target="_blank" rel="noopener noreferrer">EXPLORE ASTRAËL ON MIXCLOUD ↗</a></div></section>
 </main><footer><div class="wrap"><strong>RADIO ASTRAËL — BY ASTRAËL</strong><span>Music hosted and streamed by Mixcloud</span><span>© <span id="year">2026</span></span></div></footer>
@@ -54,13 +65,12 @@ var pinnedTracks=[
 var tracks=pinnedTracks.slice();
 var el=function(id){return document.getElementById(id);};
 var idx=0,ready=false,playing=false,loop=true,shuffle=false,w=null;
-var frame=el("widget"),generation=0,sessionStarted=false;
+var frame=el("widget"), pendingPlay=false, autoTried=false, generation=0, rebindOnLoad=false, monitor=null, sessionStarted=false;
 function key(url){return decodeURIComponent(new URL(url).pathname);}
 function iframeUrl(url,autoplay){return "https://www.mixcloud.com/widget/iframe/?hide_cover=0&mini=0&light=0&autoplay="+(autoplay?"1":"0")+"&feed="+encodeURIComponent(key(url));}
 function clock(s){if(!Number.isFinite(+s))return "--:--";s=Math.floor(Math.max(0,s));return s>=3600?Math.floor(s/3600)+":"+String(Math.floor(s%3600/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"):String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
 function status(t){el("status").textContent=t;}
 function refreshButtons(){
- el("play").hidden=!sessionStarted;
  el("play").textContent=playing?"❚❚":"▶";
  el("play").setAttribute("aria-label",playing?"Pause radio":"Play radio");
  document.querySelectorAll(".item").forEach(function(node,i){
@@ -80,50 +90,77 @@ function update(){
  var img=el("nowImage");el("largeCover").classList.toggle("has-image",!!t.cover);if(t.cover)img.src=t.cover;
  refreshButtons();
 }
-function showNativeHint(){
- status("Press ▶ directly inside the turquoise Mixcloud player to start playback.");
- el("native-player-control").classList.add("attention");
+function cancelMonitor(){if(monitor){clearTimeout(monitor);monitor=null;}}
+function fallbackMessage(){
+ if(playing)return;
+ status("Playback could not start automatically. Please press ▶ inside the Mixcloud player to unlock audio.");
 }
-function startRadio(){
+function reloadWidget(autoplay){
+ // Keep the native player accessible; do not endlessly reload it.
+ ready=false;playing=false;pendingPlay=!!autoplay;refreshButtons();
+ rebindOnLoad=true;generation++;
+ frame.src=iframeUrl(tracks[idx].url,autoplay);
+ status("Loading the selected Mixcloud mix…");
+}
+function monitorStart(delay,allowReload){
+ cancelMonitor();var expected=idx,expectedGeneration=generation;
+ monitor=setTimeout(function(){
+   monitor=null;
+   if(playing||expected!==idx||expectedGeneration!==generation)return;
+   if(allowReload){reloadWidget(true);}
+   else fallbackMessage();
+ },delay);
+}
+
+function showNativePlayHelp(){
+ if(playing)return;
+ var hint="First time listening? Press ▶ inside the official Mixcloud player below. This is a browser/Mixcloud playback restriction.";
+ status(hint);
+ el("widget").classList.add("needs-interaction");
+}
+function startRadio(userInitiated){
  if(playing){
-   if(ready&&w)w.pause().catch(function(){status("Use the Mixcloud pause button.");});
+   if(ready&&w)w.pause().catch(function(){status("Pause with the Mixcloud player below.");});
    return;
  }
- if(!ready||!w){showNativeHint();return;}
+ pendingPlay=true;
+ if(!ready||!w){
+   status("Connecting to Mixcloud… The player is directly below.");
+   return;
+ }
+ pendingPlay=false;
+ var expectedGeneration=generation;
  try{
-   // Do not reload the iframe on the first click: doing so discards the
-   // browser's user activation. A real Mixcloud Play click is supported here.
-   w.play().then(function(){
-     setTimeout(function(){if(!playing)showNativeHint();},1500);
-   }).catch(showNativeHint);
- }catch(err){showNativeHint();}
+   // Never call load() in parallel with play() on the initial gesture:
+   // reloading the cross-origin widget can invalidate the user's click.
+   var result=w.play();
+   if(result&&typeof result.catch==="function"){
+     result.catch(function(){
+       if(expectedGeneration===generation&&!playing)showNativePlayHelp();
+     });
+   }
+   if(userInitiated)status("Connecting to Mixcloud…");
+   setTimeout(function(){
+     if(expectedGeneration===generation&&!playing)showNativePlayHelp();
+   },2200);
+ }catch(error){showNativePlayHelp();}
 }
+
 function go(n,start){
  if(n<0||n>=tracks.length)return;
- idx=n;
- playing=false;
- update();
- var chosen=tracks[n],showKey=key(chosen.url);
- if(!ready||!w||!sessionStarted){
-   ready=false;
-   frame.src=iframeUrl(chosen.url,false);
-   showNativeHint();
-   return;
- }
+ idx=n;playing=false;pendingPlay=!!start;cancelMonitor();update();
+ if(!ready||!w){reloadWidget(!!start);return;}
+ var currentGeneration=generation;
  try{
-   w.load(showKey,!!start).then(function(){
-     if(!playing&&start)status("Loading "+chosen.title+"…");
-   }).catch(function(){
-     ready=false;
-     frame.src=iframeUrl(chosen.url,false);
-     showNativeHint();
-   });
-   if(start)status("Loading "+chosen.title+"…");
- }catch(error){
-   ready=false;
-   frame.src=iframeUrl(chosen.url,false);
-   showNativeHint();
- }
+   w.load(key(tracks[idx].url),!!start).then(function(){
+     if(currentGeneration===generation&&idx===n&&start&&!playing){
+       status("Loading "+tracks[idx].title+"…");
+       monitorStart(4500,true);
+     }
+   }).catch(function(){if(currentGeneration===generation&&idx===n)reloadWidget(!!start);});
+   if(start){monitorStart(6000,true);status("Switching to "+tracks[idx].title+"…");}
+   else status("Mix ready.");
+ }catch(err){reloadWidget(!!start);}
 }
 function nextIndex(){
  if(shuffle&&tracks.length>1){var n=idx;while(n===idx)n=Math.floor(Math.random()*tracks.length);return n;}
@@ -253,50 +290,50 @@ document.addEventListener("visibilitychange",function(){if(!document.hidden)sync
 el("year").textContent=new Date().getFullYear();update();
 el("prev").addEventListener("click",function(){go((idx-1+tracks.length)%tracks.length,true);});
 el("next").addEventListener("click",next);
-el("play").addEventListener("click",startRadio);
+el("play").addEventListener("click",function(){startRadio(true);});
+// LISTEN NOW is a true play action, not merely a jump to the radio section.
 var heroListen=document.querySelector(".hero-actions .btn-primary");
-if(heroListen)heroListen.addEventListener("click",function(event){
- event.preventDefault();
- el("radio").scrollIntoView({behavior:"smooth",block:"start"});
- if(!playing)startRadio();
-});
+if(heroListen){heroListen.addEventListener("click",function(event){
+  event.preventDefault();
+  // Mixcloud's official API requires its iframe to be visible to be controlled.
+  el("radio").scrollIntoView({behavior:"smooth",block:"start"});
+  // LISTEN NOW must never pause an already playing mix.
+  if(!playing)startRadio(true);
+});}
 el("shuffle").addEventListener("click",function(){shuffle=!shuffle;this.classList.toggle("active",shuffle);this.setAttribute("aria-pressed",String(shuffle));});
 el("repeat").addEventListener("click",function(){loop=!loop;this.classList.toggle("active",loop);this.setAttribute("aria-pressed",String(loop));});
 function connectWidget(){
- if(!window.Mixcloud||typeof Mixcloud.PlayerWidget!=="function"){
-   status("Mixcloud controls are unavailable. You can still play from the native player.");
-   return;
- }
- var id=++generation;
+ if(!window.Mixcloud||typeof Mixcloud.PlayerWidget!=="function"){status("Mixcloud is unavailable. Please use the official player below.");return;}
+ var thisGeneration=++generation;
  try{
-   var api=Mixcloud.PlayerWidget(frame);
-   w=api;ready=false;
-   api.ready.then(function(){
-     if(id!==generation)return;
+   var instance=Mixcloud.PlayerWidget(frame);w=instance;ready=false;
+   instance.ready.then(function(){
+     if(thisGeneration!==generation)return;
      ready=true;
-     api.events.play.on(function(){
-       if(id!==generation)return;
-       sessionStarted=true;playing=true;refreshButtons();
-       el("native-player-control").classList.remove("attention");
-       status("Now playing: "+tracks[idx].title+".");
+     instance.events.play.on(function(){
+       if(thisGeneration!==generation)return;
+       sessionStarted=true;playing=true;pendingPlay=false;cancelMonitor();el("widget").classList.remove("needs-interaction");refreshButtons();status("Now playing: "+tracks[idx].title+".");
      });
-     api.events.pause.on(function(){if(id!==generation)return;playing=false;refreshButtons();});
-     api.events.ended.on(function(){if(id===generation)next();});
-     api.events.error.on(function(){if(id===generation)status("Playback problem — try the visible Mixcloud player.");});
-     api.events.progress.on(function(pos,dur){
-       if(id!==generation)return;
+     instance.events.pause.on(function(){if(thisGeneration!==generation)return;playing=false;refreshButtons();});
+     instance.events.ended.on(function(){if(thisGeneration===generation)next();});
+     instance.events.error.on(function(){if(thisGeneration===generation)status("Mixcloud reported a playback error. Try the player below.");});
+     instance.events.progress.on(function(pos,dur){
+       if(thisGeneration!==generation)return;
        el("position").textContent=clock(pos);
        if(dur>0){el("duration").textContent=clock(dur);el("progress").style.width=Math.min(100,100*pos/dur)+"%";}
      });
-     if(!sessionStarted)status("Ready. Press ▶ inside the turquoise Mixcloud player to start.");
-   }).catch(function(){if(id===generation)status("Use ▶ inside the Mixcloud player to listen.");});
- }catch(error){status("Use ▶ inside the Mixcloud player to listen.");}
+     if(pendingPlay){startRadio(false);}
+     else if(!autoTried){
+       autoTried=true;
+       startRadio(false);
+     }else{status("Radio ready. Press ▶ to listen.");}
+   }).catch(function(){if(thisGeneration===generation)status("Mixcloud player did not initialize. Try ▶ inside the widget.");});
+ }catch(err){status("Mixcloud connection failed. Use ▶ in the player below.");}
 }
-// The widget's postMessage API must be initialized after the iframe load.
-// Its own Play button works independently from our JS control API.
-frame.addEventListener("load",connectWidget);
-window.addEventListener("load",function(){if(!w)connectWidget();});
-
+frame.addEventListener("load",function(){
+ if(rebindOnLoad){rebindOnLoad=false;connectWidget();}
+});
+connectWidget();
 })();
 </script>
 </body>
