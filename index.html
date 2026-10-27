@@ -19,11 +19,11 @@
 .controls{flex-wrap:wrap;align-items:center}
 .native-player-control{flex:1 1 340px;min-width:250px;border:2px solid var(--cyan);border-radius:12px;padding:8px;background:linear-gradient(110deg,#0b313a,#102439);box-shadow:0 0 0 3px #73f9eb10}
 .native-player-control .native-heading{display:block;color:var(--cyan);font-size:10px;letter-spacing:.11em;font-weight:800;padding:0 3px 6px}
-.native-player-control .mcframe{width:100%;height:110px;display:block}
+.native-player-control .mcframe{width:100%;height:155px;display:block}
 .native-player-control:focus-within{outline:2px solid var(--cyan);outline-offset:3px}
 .native-player-control.attention{box-shadow:0 0 0 4px #83f8ed38,0 0 35px #75f3e93d}
 #play[hidden]{display:none!important}
-@media(max-width:670px){.native-player-control{flex-basis:100%;min-width:0;order:4}.native-player-control .mcframe{height:120px}}
+@media(max-width:670px){.native-player-control{flex-basis:100%;min-width:0;order:4}.native-player-control .mcframe{height:155px}}
 </style>
 </head>
 <body>
@@ -295,6 +295,7 @@ function connectWidget(){
 // The widget's postMessage API must be initialized after the iframe load.
 // Its own Play button works independently from our JS control API.
 frame.addEventListener("load",connectWidget);
+window.addEventListener("load",function(){if(!w)connectWidget();});
 
 })();
 </script>
