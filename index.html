@@ -174,26 +174,38 @@ async function syncShows(){
  if(syncActive)return;
  syncActive=true;
  try{
-   var next="https://api.mixcloud.com/Astrael/cloudcasts/?limit=100&offset=0";
-   var checked=new Set(),responseShows=[];
-   while(next&&checked.size<30){
-     if(checked.has(next))break;
-     checked.add(next);
-     var response=await fetch(next,{headers:{Accept:"application/json"},cache:"no-store"});
-     if(!response.ok)throw Error("Mixcloud HTTP "+response.status);
+   // Use small, explicit offset pages. Large 'limit=100' requests can
+   // return an incomplete page on some APIs without an obvious error.
+   var profileCount=null;
+   try{
+     var profileResponse=await fetch("https://api.mixcloud.com/Astrael/",{cache:"no-store"});
+     if(profileResponse.ok){
+       var profile=await profileResponse.json();
+       if(Number.isInteger(profile.cloudcast_count)&&profile.cloudcast_count>=0)profileCount=profile.cloudcast_count;
+     }
+   }catch(profileError){console.info("Mixcloud profile count unavailable",profileError);}
+   var pageSize=20, responses=[],seenPages=new Set();
+   for(var offset=0;offset<2000;offset+=pageSize){
+     var api="https://api.mixcloud.com/Astrael/cloudcasts/?limit="+pageSize+"&offset="+offset;
+     var response=await fetch(api,{headers:{Accept:"application/json"},cache:"no-store"});
+     if(!response.ok)throw Error("Mixcloud HTTP "+response.status+" at offset "+offset);
      var page=await response.json();
      if(!Array.isArray(page.data))throw Error("Invalid catalog response");
-     responseShows.push.apply(responseShows,page.data);
-     var nextUrl=page.paging&&page.paging.next;
-     next=typeof nextUrl==="string"&&nextUrl.startsWith("https://api.mixcloud.com/")?nextUrl:null;
+     var fresh=0;
+     page.data.forEach(function(item){
+       var key=item.key||item.url||JSON.stringify(item);
+       if(!seenPages.has(key)){seenPages.add(key);responses.push(item);fresh++;}
+     });
+     // A short or empty page is the end of the available public uploads.
+     // A full page is followed by another request even when paging.next
+     // is missing, to guard against missing pagination metadata.
+     if(page.data.length<pageSize||fresh===0)break;
    }
-   if(!responseShows.length)throw Error("No public shows returned");
-   var previous=tracks.map(function(t){return identity(t.url);}).join("|");
+   if(!responses.length)throw Error("No public shows returned");
    var previouslySelected=identity(tracks[idx].url);
    var pinnedIds=new Set(pinnedTracks.map(function(t){return identity(t.url);}));
-   var addedIds=new Set();
-   var additional=[];
-   responseShows.forEach(function(item){
+   var addedIds=new Set(),additional=[];
+   responses.forEach(function(item){
      var url=typeof item.url==="string"?item.url:"";
      if(!identity(url)&&typeof item.key==="string")url="https://www.mixcloud.com"+item.key;
      var id=identity(url);
@@ -218,15 +230,19 @@ async function syncShows(){
    tracks=pinnedTracks.concat(additional);
    var pos=tracks.findIndex(function(t){return identity(t.url)===previouslySelected;});
    idx=pos>=0?pos:0;
-   var total=tracks.length;
-   el("catalog-total").textContent=total+" MIXES · LIVE MIXCLOUD CATALOG";
+   var total=tracks.length,apiCount=responses.length;
+   var message=total+" MIXES · LIVE MIXCLOUD CATALOG";
+   // A count discrepancy does not mean we can stream private / draft
+   // uploads: only public links returned by Mixcloud can be embedded.
+   if(profileCount!==null&&profileCount>apiCount){
+     message=total+" PLAYABLE MIXES · "+profileCount+" PROFILE UPLOADS";
+   }
+   el("catalog-total").textContent=message;
    el("counter").textContent=String(idx+1).padStart(2,"0")+" / "+String(total).padStart(2,"0");
    renderPlaylist();
    var active=tracks[idx];
    if(active.cover){el("largeCover").classList.add("has-image");el("nowImage").src=active.cover;}
-   if(previous!==tracks.map(function(t){return identity(t.url);}).join("|")){
-     console.info("Radio Astraël catalog refreshed:",total,"shows");
-   }
+   console.info("Radio Astraël Mixcloud sync:",{pinned:pinnedTracks.length,publicApi:apiCount,uniquePlayable:total,profileCount:profileCount});
  }catch(error){
    console.warn("Mixcloud catalog update failed:",error);
    el("catalog-total").textContent=tracks.length+" MIXES · RETRYING MIXCLOUD SYNC";
@@ -241,6 +257,9 @@ el("year").textContent=new Date().getFullYear();update();
 el("prev").addEventListener("click",function(){go((idx-1+tracks.length)%tracks.length,true);});
 el("next").addEventListener("click",next);
 el("play").addEventListener("click",function(){startRadio(true);});
+// LISTEN NOW is a true play action, not merely a jump to the radio section.
+var heroListen=document.querySelector(".hero-actions .btn-primary");
+if(heroListen){heroListen.addEventListener("click",function(){startRadio(true);});}
 el("shuffle").addEventListener("click",function(){shuffle=!shuffle;this.classList.toggle("active",shuffle);this.setAttribute("aria-pressed",String(shuffle));});
 el("repeat").addEventListener("click",function(){loop=!loop;this.classList.toggle("active",loop);this.setAttribute("aria-pressed",String(loop));});
 function connectWidget(){
