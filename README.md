@@ -1,62 +1,38 @@
-# Radio Astraël
+# Radio Astraël — The Classic Mixcloud Radio
 
-A new, independent radio site and secure Supabase-backed Studio for `DJ-Astrael/radio-astrael`.
+This repository hosts the **classic Radio Astraël website**, matching the original dark/cyan/purple design supplied by the artist.
 
-## What is included
+**Public radio:** https://dj-astrael.github.io/radio-astrael/
 
-- `index.html`, `styles.css`, `app.js`: public radio and playlist.
-- `admin.html`, `admin.css`, `admin.js`: private Studio at `/admin.html`.
-- `supabase/schema.sql`: database tables, row-level security (RLS), and Storage bucket policies.
-- `config.js`: **public** browser connection placeholders (not filled yet).
+## Seven featured mixes (in the fixed order)
 
-The Studio lets approved administrators add mixes individually by **Mixcloud URL** or by uploading an **MP3** that they have rights to distribute, plus a cover image or HTTPS cover URL. They can set playback order, publish/unpublish, or delete tracks. Public visitors only receive published entries from the database. The design and text are in English.
+1. The Last Transmission
+2. Neural Dream
+3. Into The Blue
+4. Echoes of Trance
+5. Eclipse
+6. Autumn Passion
+7. Rainy Day
 
-**Important distinction:** Mixcloud streams play through the official embedded widget. MP3s stream through the browser audio player using public Supabase Storage URLs. Browser autoplay with sound is not guaranteed. The public website tries continuous playback on track-end events, but it is an on-demand listening site, **not a synchronized 24/7 broadcast server**. Access to uploaded file URLs is public even for draft tracks; do not upload private material.
+## How it works
 
-## A. Set up your own Supabase project
+- The entire site is contained in **index.html**, including layout, styles and player logic.
+- Audio remains on **Mixcloud** through its official embedded player.
+- Each mix provides a link to its Mixcloud page for comments, favorites and sharing.
+- Previous / next, shuffle and repeat are provided. The site requests automatic continuation when a mix ends.
+- It attempts autoplay with **The Last Transmission** first. Browser autoplay policies or Mixcloud restrictions may require a first click. Uninterrupted playback is not guaranteed when the browser sleeps or restricts embedded players.
+- No Supabase database, no upload backend, no administration account, and no other playlist are required.
 
-1. Sign in at https://supabase.com/dashboard and create a **NEW** project named `Radio Astraël`. You may choose a European region. **Do not reuse Artemius Radio's project or credentials**.
-2. In **SQL Editor**, open `supabase/schema.sql` from this repository, paste its contents, and **Run** once. This creates `public.radio_admins`, `public.radio_tracks`, the `astrael-audio` and `astrael-covers` buckets, and admin-only write policies. The SQL is intended for an empty new radio project. Review the script before running; do not rerun against existing tables.
-3. In **Authentication → Users**, create the admin user with your own email/password. If Supabase sends an invitation, complete it. Never share the password in chat.
-4. Copy the admin user's **UUID** from Authentication → Users. In Supabase **SQL Editor**, run:
-   ```sql
-   insert into public.radio_admins (user_id)
-   values ('PASTE-THE-ADMIN-USER-UUID-HERE');
-   ```
-   Replace the placeholder with the exact UUID. This grants Studio rights to that Supabase account only.
+## Publish
 
-## B. Connect the website
+In the GitHub repository Settings → Pages, select:
 
-1. In the NEW project's **Project Settings → API Keys / Data API**, copy its **Project URL** (example: `https://example.supabase.co`) and **publishable / anon public key**.
-2. Edit `config.js` in this repository, filling ONLY `supabaseUrl` and `publishableKey`. These client keys are deliberately public and safe for browser use *with RLS in place*. Never use a `service_role` key, secret key, or database password in the repository.
-3. In **Authentication → URL Configuration**, set Site URL to `https://dj-astrael.github.io/radio-astrael/`, and add `https://dj-astrael.github.io/radio-astrael/**` to Redirect URLs if using email invitations or password recovery.
-4. Deploy as described below, then visit `https://dj-astrael.github.io/radio-astrael/admin.html` to sign in.
+- Source: **Deploy from a branch**
+- Branch: **main**
+- Folder: **/(root)**
 
-## C. Publish with GitHub Pages
+The website is hosted freely by GitHub Pages. This is an on-demand Mixcloud playlist, not a synchronized live radio server.
 
-From the repository's **Settings → Pages**, set **Source: Deploy from a branch**, **Branch: main**, **Folder: /(root)**, then save. The expected public website URL is:
+## Update tracks
 
-https://dj-astrael.github.io/radio-astrael/
-
-The site may take a few minutes to appear after enabling Pages. Do not assume it is live before GitHub reports a successful Pages deployment.
-
-## D. Add your first mix
-
-In the Studio, enter the title and artist, choose `Mixcloud Link`, paste the full Mixcloud upload URL (not just your profile URL), optionally provide its HTTPS cover image URL or upload a cover, set Playback Order to `1`, and check **Publish immediately**. Press **Add Mix**.
-
-To use an MP3 instead, select `Upload MP3` and choose a valid MP3 up to **50 MB**, with optional JPG/PNG/WebP cover up to **8 MB**. Large DJ sets will often exceed these per-file limits, and Supabase's plan and project upload restrictions also apply. **For full-length Mixcloud sets, use the Mixcloud option.**
-
-For **The Last Transmission** as the first mix, add it with order `1`, and give subsequent mixes order `2`, `3`, etc. Play order is ascending numeric.
-
-## Security and platform limitations
-
-- Public database visitors can query only rows where `is_published=true`; all inserts, updates and deletions require a session authorized via `radio_admins` and RLS.
-- Public Storage buckets allow visitors to access uploaded audio and covers through their URLs, including uploaded files whose track metadata is still a draft. This is intentional for the simple public-player architecture.
-- Only authorize distribution of sound recordings you control or for which you have necessary permissions.
-- Supabase free-tier limitations on bandwidth, storage, file size and inactivity may affect usage.
-- Mixcloud decides playback behavior, embed support and listener statistics; this site cannot guarantee autoplay before the first click or force Mixcloud to count plays.
-- Do not share Supabase secrets with anyone in chat.
-
-## References
-
-The public code of Artemius Radio (https://github.com/Artemiusdyso/artemius-radio) was consulted to understand the broad architecture. Radio Astraël uses **its own** code, database names, branding and Supabase project.
+Edit the `tracks` array inside `index.html`. Use full Mixcloud set URLs. The page uses those Mixcloud URLs to load covers where permitted by the Mixcloud API. Do not add fake streams or automated plays to inflate statistics.
