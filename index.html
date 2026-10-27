@@ -23,7 +23,7 @@
 <div class="rule"></div>
 <section id="radio" class="content"><div class="section-heading"><div><span class="eyebrow">01 / THE FREQUENCY</span><h2>The radio<span>.</span></h2></div><span class="side-note">MIXCLOUD PLAYER • 24/7</span></div>
 <div class="console"><div id="largeCover" class="cover"><span class="initial">A✦</span><img id="nowImage" alt="Cover art for the selected mix"></div><div class="console-content"><div class="player-top"><span class="status">● RADIO ASTRAËL</span><span id="counter">01 / 07</span></div><div class="current-label">NOW PLAYING · ASTRAËL</div><h3 id="nowTitle" class="current-title">The Last Transmission</h3><p class="current-subtitle" id="nowDescription">Radio Egypt</p><div class="controls"><button id="prev" class="round" type="button" aria-label="Previous mix">⏮</button><button id="play" class="play" type="button" aria-label="Play or pause">▶</button><button id="next" class="round" type="button" aria-label="Next mix">⏭</button><span class="spacer"></span><button id="shuffle" class="mode" type="button" aria-pressed="false" title="Shuffle playback">⇄</button><button id="repeat" class="mode active" type="button" aria-pressed="true" title="Repeat playlist">↻</button></div><div class="progress"><div id="progress"></div></div><div class="time"><span id="position">00:00</span><span id="duration">--:--</span></div><div class="iframe-label">OFFICIAL MIXCLOUD PLAYER</div><iframe class="mcframe" id="widget" title="Listen to Astraël on Mixcloud" allow="autoplay" loading="eager" src="https://www.mixcloud.com/widget/iframe/?hide_cover=0&mini=0&light=0&autoplay=1&feed=%2FAstrael%2Fastrael-the-last-transmission-on-dj-power-power-mix-radio-egypt-15%2F"></iframe><div class="player-bottom"><p id="status" role="status" aria-live="polite">Starting with The Last Transmission… If your browser blocks autoplay, press ▶.</p><a id="openTrack" class="mix-link" href="https://www.mixcloud.com/Astrael/astra%C3%ABl-neural-dream-radio-egypt-trance21com/" target="_blank" rel="noopener noreferrer">COMMENT / FAVORITE ↗</a></div></div></div><p class="note">Autoplay starts with The Last Transmission when your browser allows it. Otherwise, press ▶ once to start your listening session. Mixcloud handles playback statistics and audience interactions.</p></section>
-<section id="selection" class="content"><div class="section-heading"><div><span class="eyebrow">02 / THE COLLECTION</span><h2>Musical journeys<span>.</span></h2></div><span class="side-note">7 MIXES · HANDPICKED SELECTION</span></div><div id="playlist" class="list" aria-label="Selected mixes"></div></section>
+<section id="selection" class="content"><div class="section-heading"><div><span class="eyebrow">02 / THE COLLECTION</span><h2>Musical journeys<span>.</span></h2></div><span class="side-note" id="catalog-total" aria-live="polite">7 MIXES · SYNCING WITH MIXCLOUD…</span></div><div id="playlist" class="list" aria-label="Selected mixes"></div></section>
 <section id="about" class="about"><div><div class="eyebrow">03 / THE PHILOSOPHY</div><h2>NOT JUST MUSIC.<br><em>A STATE OF MIND.</em></h2></div><div><p>Radio Astraël brings together Astraël's sets in a continuous musical journey: hypnotic atmospheres, progressive energy, and emotions beyond borders.</p><p>All mixes remain hosted on Mixcloud. Select ↗ to open each set, share it, leave a comment, add it to your favorites, or support the artist.</p><a class="profile" href="https://www.mixcloud.com/Astrael/" target="_blank" rel="noopener noreferrer">EXPLORE ASTRAËL ON MIXCLOUD ↗</a></div></section>
 </main><footer><div class="wrap"><strong>RADIO ASTRAËL — BY ASTRAËL</strong><span>Music hosted and streamed by Mixcloud</span><span>© <span id="year">2026</span></span></div></footer>
 <script src="https://widget.mixcloud.com/media/js/widgetApi.js"></script>
@@ -31,7 +31,7 @@
 (function(){
 "use strict";
 // TEMPORARY SELECTION: the artist can edit the mix URLs below.
-var tracks=[
+var pinnedTracks=[
  {title:"The Last Transmission",subtitle:"Radio Egypt",genre:"Melodic progressive",duration:"55:03",url:"https://www.mixcloud.com/Astrael/astrael-the-last-transmission-on-dj-power-power-mix-radio-egypt-15/"},
  {title:"Neural Dream",subtitle:"Trance21.com × Radio Egypt",genre:"Hypnotic trance",duration:"55:30",url:"https://www.mixcloud.com/Astrael/astra%C3%ABl-neural-dream-radio-egypt-trance21com/"},
  {title:"Into The Blue",subtitle:"Trance21.com",genre:"Melodic trance",duration:"1:00:38",url:"https://www.mixcloud.com/Astrael/astra%C3%ABl-into-the-blue-trance21com/"},
@@ -41,6 +41,7 @@ var tracks=[
  {title:"Rainy Day",subtitle:"Astraël × Artemius × NLH",genre:"Hypnotic techno",duration:"1:02:23",url:"https://www.mixcloud.com/Astrael/astra%C3%ABl-artemius-nlh-rainy-day/"}
 
 ];
+var tracks=pinnedTracks.slice();
 var el=function(id){return document.getElementById(id);};
 var idx=0,ready=false,playing=false,loop=true,shuffle=false,w=null;
 var frame=el("widget"), pendingPlay=false, autoTried=false, generation=0, rebindOnLoad=false, monitor=null, sessionStarted=false;
@@ -132,15 +133,110 @@ function nextIndex(){
  return idx+1<tracks.length?idx+1:(loop?0:-1);
 }
 function next(){var n=nextIndex();if(n<0){playing=false;refreshButtons();status("End of the playlist.");return;}go(n,true);}
+
+// Preserve the exact seven original mixes and dynamically append every other
+// public Astraël show as a standard Mixcloud link. No database or MP3 uploads.
+function identity(url){
+ try {
+   var u=new URL(url);
+   if(u.hostname!=="www.mixcloud.com"&&u.hostname!=="mixcloud.com")return "";
+   return u.pathname.split("/").filter(Boolean).map(function(s){return decodeURIComponent(s).toLowerCase();}).join("/");
+ }catch(error){return "";}
+}
+function durationString(value){
+ var n=Number(value);
+ if(!Number.isFinite(n)||n<=0)return "—";
+ n=Math.round(n);
+ var h=Math.floor(n/3600),m=Math.floor(n%3600/60),s=n%60;
+ return h?h+":"+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0"):m+":"+String(s).padStart(2,"0");
+}
+function bestCover(show){
+ var p=show&&show.pictures||{};
+ return p.extra_large||p.large||p.medium||p.thumbnail||"";
+}
+function renderPlaylist(){
+el("playlist").replaceChildren();
 tracks.forEach(function(t,i){
  var a=document.createElement("article");a.className="item";var num=document.createElement("div");num.className="idx";num.textContent=String(i+1).padStart(2,"0");
- var cover=document.createElement("div");cover.className="thumb";cover.textContent="A✦";var im=document.createElement("img");im.alt="Cover artwork for "+t.title;im.loading="lazy";cover.appendChild(im);t.img=im;t.thumb=cover;
+ var cover=document.createElement("div");cover.className="thumb";cover.textContent="A✦";var im=document.createElement("img");im.alt="Cover artwork for "+t.title;im.loading="lazy";cover.appendChild(im);t.img=im;t.thumb=cover;if(t.cover){im.src=t.cover;cover.classList.add("has-image");}
  var d=document.createElement("div"),name=document.createElement("div"),sub=document.createElement("div");name.className="mix-name";name.textContent=t.title;sub.className="mix-meta";sub.textContent=t.subtitle;d.append(name,sub);
  var g=document.createElement("div");g.className="genre";g.textContent=t.genre;var length=document.createElement("div");length.className="length";length.textContent=t.duration;
  var actions=document.createElement("div");actions.className="actions";var button=document.createElement("button");button.className="tiny-button";button.type="button";button.textContent="▶ PLAY";button.addEventListener("click",function(){go(i,true);document.getElementById("radio").scrollIntoView({behavior:"smooth"});});var link=document.createElement("a");link.className="open-link";link.href=t.url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="↗";link.title="Open this mix on Mixcloud";actions.append(button,link);a.append(num,cover,d,g,length,actions);el("playlist").append(a);
  // Public Mixcloud metadata may be available via CORS. A fallback graphic is shown otherwise.
- fetch("https://api.mixcloud.com"+key(t.url)).then(function(r){if(!r.ok)throw Error("metadata");return r.json();}).then(function(data){var u=data.pictures&&(data.pictures.extra_large||data.pictures.large||data.pictures.medium);if(!u)return;im.onload=function(){cover.classList.add("has-image");t.cover=u;if(idx===i)update();};im.src=u;}).catch(function(){});
+ if(i<pinnedTracks.length&&!t.cover)fetch("https://api.mixcloud.com"+key(t.url)).then(function(r){if(!r.ok)throw Error("metadata");return r.json();}).then(function(data){var u=data.pictures&&(data.pictures.extra_large||data.pictures.large||data.pictures.medium);if(!u)return;im.onload=function(){cover.classList.add("has-image");t.cover=u;if(idx===i)update();};im.src=u;}).catch(function(){});
 });
+
+ refreshButtons();
+}
+renderPlaylist();
+var syncActive=false;
+async function syncShows(){
+ if(syncActive)return;
+ syncActive=true;
+ try{
+   var next="https://api.mixcloud.com/Astrael/cloudcasts/?limit=100&offset=0";
+   var checked=new Set(),responseShows=[];
+   while(next&&checked.size<30){
+     if(checked.has(next))break;
+     checked.add(next);
+     var response=await fetch(next,{headers:{Accept:"application/json"},cache:"no-store"});
+     if(!response.ok)throw Error("Mixcloud HTTP "+response.status);
+     var page=await response.json();
+     if(!Array.isArray(page.data))throw Error("Invalid catalog response");
+     responseShows.push.apply(responseShows,page.data);
+     var nextUrl=page.paging&&page.paging.next;
+     next=typeof nextUrl==="string"&&nextUrl.startsWith("https://api.mixcloud.com/")?nextUrl:null;
+   }
+   if(!responseShows.length)throw Error("No public shows returned");
+   var previous=tracks.map(function(t){return identity(t.url);}).join("|");
+   var previouslySelected=identity(tracks[idx].url);
+   var pinnedIds=new Set(pinnedTracks.map(function(t){return identity(t.url);}));
+   var addedIds=new Set();
+   var additional=[];
+   responseShows.forEach(function(item){
+     var url=typeof item.url==="string"?item.url:"";
+     if(!identity(url)&&typeof item.key==="string")url="https://www.mixcloud.com"+item.key;
+     var id=identity(url);
+     if(!id)return;
+     if(pinnedIds.has(id)){
+       var original=pinnedTracks.find(function(t){return identity(t.url)===id;});
+       if(original&&!original.cover)original.cover=bestCover(item);
+       return;
+     }
+     if(addedIds.has(id))return;
+     addedIds.add(id);
+     var tags=Array.isArray(item.tags)?item.tags.map(function(t){return t&&t.name;}).filter(Boolean):[];
+     additional.push({
+       title:String(item.name||"Astraël Mix"),
+       subtitle:"Astraël · Mixcloud",
+       genre:tags.slice(0,2).join(" / ")||"Trance / Progressive",
+       duration:durationString(item.audio_length||item.length),
+       url:url,
+       cover:bestCover(item)
+     });
+   });
+   tracks=pinnedTracks.concat(additional);
+   var pos=tracks.findIndex(function(t){return identity(t.url)===previouslySelected;});
+   idx=pos>=0?pos:0;
+   var total=tracks.length;
+   el("catalog-total").textContent=total+" MIXES · LIVE MIXCLOUD CATALOG";
+   el("counter").textContent=String(idx+1).padStart(2,"0")+" / "+String(total).padStart(2,"0");
+   renderPlaylist();
+   var active=tracks[idx];
+   if(active.cover){el("largeCover").classList.add("has-image");el("nowImage").src=active.cover;}
+   if(previous!==tracks.map(function(t){return identity(t.url);}).join("|")){
+     console.info("Radio Astraël catalog refreshed:",total,"shows");
+   }
+ }catch(error){
+   console.warn("Mixcloud catalog update failed:",error);
+   el("catalog-total").textContent=tracks.length+" MIXES · RETRYING MIXCLOUD SYNC";
+ }finally{syncActive=false;}
+}
+syncShows();
+// New public shows appear without editing GitHub; refresh every 10 minutes
+// while the radio stays open, or when returning to its tab.
+setInterval(syncShows,600000);
+document.addEventListener("visibilitychange",function(){if(!document.hidden)syncShows();});
 el("year").textContent=new Date().getFullYear();update();
 el("prev").addEventListener("click",function(){go((idx-1+tracks.length)%tracks.length,true);});
 el("next").addEventListener("click",next);
