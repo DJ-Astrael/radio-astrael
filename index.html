@@ -271,7 +271,8 @@ if(heroListen){heroListen.addEventListener("click",function(event){
   event.preventDefault();
   // Mixcloud's official API requires its iframe to be visible to be controlled.
   el("radio").scrollIntoView({behavior:"auto",block:"start"});
-  startRadio(true);
+  // LISTEN NOW must never pause an already playing mix.
+  if(!playing)startRadio(true);
 });}
 el("shuffle").addEventListener("click",function(){shuffle=!shuffle;this.classList.toggle("active",shuffle);this.setAttribute("aria-pressed",String(shuffle));});
 el("repeat").addEventListener("click",function(){loop=!loop;this.classList.toggle("active",loop);this.setAttribute("aria-pressed",String(loop));});
